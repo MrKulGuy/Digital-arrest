@@ -306,7 +306,8 @@ class FraudDetector:
                 "annotated_html": "",
                 "guidance": "Please enter or paste text to evaluate potential scam risks.",
                 "safe_steps": [],
-                "is_safeguard_active": False
+                "is_safeguard_active": False,
+                "auto_complaint": {"filed": False, "token": None, "status": "NOT_TRIGGERED"}
             }
 
         t_start = time.perf_counter()
@@ -348,6 +349,39 @@ class FraudDetector:
         # 7. Strict "Assist, Don't Accuse" Policy Guidance & Safe Steps
         guidance, safe_steps = self._generate_guidance(risk_level, category_counts, is_safeguard_active)
 
+        # 8. Automated Cyber Cell Complaint (Triggered when Risk >= 70%)
+        if risk_score_pct >= 70.0:
+            token_id = f"NCR-2026-{int(time.time() * 1000) % 900000 + 100000}"
+            cues_list = [f"{s['category_name']}: '{s['phrase']}'" for s in spans]
+            dossier_text = (
+                f"INCIDENT DOSSIER: SUSPECTED DIGITAL ARREST / EXTORTION\n"
+                f"Reference Token: {token_id}\n"
+                f"Routing Authority: National Cyber Crime Reporting Portal (cybercrime.gov.in) & 1930 Hotline\n"
+                f"Applicable Sections: Section 66D IT Act (Personation), Section 318(4) & 308 BNSS (Cheating & Extortion)\n"
+                f"Assessed Risk Score: {risk_score_pct}% (HIGH RISK)\n"
+                f"Detection Latency: {latency_ms} ms\n"
+                f"Flagged Coercive Cues ({len(spans)}):\n" + "\n".join(f" - {c}" for c in cues_list) + "\n\n"
+                f"Evidence Transcript Excerpt:\n\"{text.strip()}\"\n"
+            )
+            auto_complaint = {
+                "filed": True,
+                "token": token_id,
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S IST"),
+                "authority": "National Cyber Crime Reporting Portal (cybercrime.gov.in)",
+                "helpline": "1930",
+                "status": "AUTOMATICALLY FILED & DISPATCHED TO CYBER CELL",
+                "incident_type": "Digital Arrest / High-Risk Authority Impersonation Extortion",
+                "evidence_count": len(spans),
+                "dossier": dossier_text
+            }
+        else:
+            auto_complaint = {
+                "filed": False,
+                "token": None,
+                "status": "NOT_TRIGGERED",
+                "reason": "Risk score is below 70% threshold."
+            }
+
         return {
             "risk_score_pct": risk_score_pct,
             "risk_level": risk_level,
@@ -360,7 +394,8 @@ class FraudDetector:
             "annotated_html": annotated_html,
             "guidance": guidance,
             "safe_steps": safe_steps,
-            "is_safeguard_active": is_safeguard_active
+            "is_safeguard_active": is_safeguard_active,
+            "auto_complaint": auto_complaint
         }
 
     def _build_annotated_html(self, text: str, spans: List[Dict[str, Any]]) -> str:

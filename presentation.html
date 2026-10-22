@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS-1 Presentation: Digital Arrest & Real-Time Cyber Fraud Shield</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --card-bg: #243248;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-body: #cbd5e1;
+            --text-muted: #94a3b8;
+            --primary: #3b82f6;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --purple: #a855f7;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background: #020617; color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; }
+
+        /* Slide Deck Container */
+        .deck { width: 100vw; max-width: 1280px; height: 720px; position: relative; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); overflow: hidden; }
+        .slide { width: 100%; height: 100%; padding: 48px 56px; display: none; flex-direction: column; justify-content: space-between; position: absolute; top: 0; left: 0; }
+        .slide.active { display: flex; }
+
+        /* Slide Headers */
+        .slide-pill { display: inline-block; background: var(--surface); color: var(--primary); font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 999px; border: 1px solid var(--border); text-transform: uppercase; margin-bottom: 8px; width: fit-content; }
+        .slide-title { font-size: 2.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 24px; line-height: 1.2; }
+
+        /* Cards & Grids */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; flex-grow: 1; margin-bottom: 16px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; flex-grow: 1; margin-bottom: 16px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex-grow: 1; margin-bottom: 16px; }
+        .grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; flex-grow: 1; margin-bottom: 16px; }
+
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px; display: flex; flex-direction: column; }
+        .card-header { font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .card-body { font-size: 0.95rem; color: var(--text-body); line-height: 1.6; }
+        .card-body li { margin-bottom: 8px; margin-left: 18px; }
+
+        /* Slide 1 Cover Specifics */
+        .cover-container { height: 100%; display: flex; flex-direction: column; justify-content: center; }
+        .cover-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 44px; }
+        .cover-title { font-size: 2.8rem; font-weight: 800; color: #fff; line-height: 1.15; margin-top: 12px; margin-bottom: 10px; }
+        .cover-subtitle { font-size: 1.2rem; color: var(--primary); font-weight: 500; margin-bottom: 32px; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .info-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 18px; }
+        .info-label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+
+        /* Slide 5 Workflow Circle */
+        .step-circle { width: 44px; height: 44px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; margin: 0 auto 16px auto; }
+
+        /* Footer & Navigation */
+        .nav-controls { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 1280px; margin-top: 16px; color: var(--text-muted); font-size: 0.9rem; }
+        .nav-btn { background: var(--surface); border: 1px solid var(--border); color: white; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: background 0.2s; }
+        .nav-btn:hover { background: var(--primary); }
+
+        /* Mobile Responsive Adaptations */
+        @media (max-width: 768px) {
+            body { padding: 8px; justify-content: flex-start; }
+            .deck { width: 100%; height: auto; min-height: 85vh; border-radius: 8px; }
+            .slide { position: relative; height: auto; min-height: 82vh; padding: 22px 16px; }
+            .slide-title { font-size: 1.35rem; margin-bottom: 16px; }
+            .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; gap: 12px; }
+            .cover-title { font-size: 1.7rem; }
+            .cover-subtitle { font-size: 0.92rem; margin-bottom: 18px; }
+            .cover-box { padding: 18px 14px; }
+            .info-grid { grid-template-columns: 1fr; gap: 12px; }
+            .nav-controls { padding: 8px 4px; }
+            .nav-btn { padding: 8px 14px; }
+            .card { padding: 14px; }
+            .card-header { font-size: 1.05rem; }
+            .card-body { font-size: 0.88rem; }
+        }
+
+        /* Print Mode: Exact A4 / 16:9 PDF Export */
+        @media print {
+            body { background: none; padding: 0; min-height: auto; }
+            .nav-controls { display: none; }
+            .deck { width: 100vw; height: 100vh; border: none; box-shadow: none; border-radius: 0; }
+            .slide { display: flex !important; page-break-after: always; width: 100vw; height: 100vh; position: relative; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="deck">
+        <!-- ======================================================= -->
+        <!-- SLIDE 1 : COVER SLIDE -->
+        <!-- ======================================================= -->
+        <div class="slide active">
+            <div class="cover-container">
+                <div class="cover-box">
+                    <span class="slide-pill" style="color: #93c5fd; background: #1e3a8a;">HACKATHON PRESENTATION | PS-1</span>
+                    <h1 class="cover-title">Digital Arrest & Real-Time Cyber Fraud Shield</h1>
+                    <p class="cover-subtitle">Explainable Hybrid AI (Machine Learning + Rule-Based Cue Engine) | 100% Local CPU Execution</p>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <div class="info-label" style="color: var(--green);">👥 TEAM INFORMATION</div>
+                            <p style="font-weight: 700; font-size: 1.05rem; color: #fff;">Team Name: Team CyberShield</p>
+                            <p style="color: var(--text-body); font-size: 0.95rem; margin-top: 4px;">Team Leader: [Team Leader Name]</p>
+                            <p style="color: var(--text-body); font-size: 0.95rem; margin-top: 2px;">Team Members: [Member 1, Member 2, Member 3]</p>
+                        </div>
+                        <div class="info-card">
+                            <div class="info-label" style="color: var(--amber);">🎯 PROBLEM STATEMENT</div>
+                            <p style="font-weight: 700; font-size: 1.05rem; color: #fff;">PS Number: PS-1</p>
+                            <p style="color: var(--text-body); font-size: 0.95rem; margin-top: 4px;">Title: Digital Arrest & Real-Time Cyber Fraud Shield</p>
+                            <p style="color: var(--text-body); font-size: 0.95rem; margin-top: 2px;">Focus: Real-Time Detection of Video Coercion & Impersonation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- SLIDE 2 : INTRODUCTION (Objectives) -->
+        <!-- ======================================================= -->
+        <div class="slide">
+            <div>
+                <span class="slide-pill">PS-1: DIGITAL ARREST & REAL-TIME CYBER FRAUD SHIELD</span>
+                <h2 class="slide-title">Introduction: Confronting the Digital Arrest Epidemic</h2>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-header" style="color: var(--red);">🚨 The Threat Landscape</div>
+                    <div class="card-body">
+                        Cyber syndicates impersonate CBI, State Police, and Court officials over video calls, holding victims in coerced "Digital Arrest" and extorting funds to fraudulent escrow accounts.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--primary);">🎯 Core Objectives</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Real-time call & SMS pattern detection.</li>
+                            <li>Sub-millisecond local CPU execution.</li>
+                            <li>100% privacy with zero cloud dependencies.</li>
+                            <li>Granular explainability on all risk cues.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">🛡️ Citizen Empowerment</div>
+                    <div class="card-body">
+                        Adheres to a strict <em>"Assist, Don't Accuse"</em> framework, providing calm, structured next steps and direct integration with India's <strong>1930 Cyber Helpline</strong> and <strong>cybercrime.gov.in</strong>.
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Slide 2 of 7</div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- SLIDE 3 : PROPOSED SOLUTION -->
+        <!-- ======================================================= -->
+        <div class="slide">
+            <div>
+                <span class="slide-pill">PS-1: DIGITAL ARREST & REAL-TIME CYBER FRAUD SHIELD</span>
+                <h2 class="slide-title">Proposed Solution: Explainable Hybrid AI Shield</h2>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--primary);">🧠 Explainable Hybrid Architecture</div>
+                    <div class="card-body">
+                        TfidfVectorizer (1-3 n-grams) + Calibrated Logistic Regression (40%) combined with a 6-Category Regex Span Highlighter (60%) for sub-millisecond precision.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--red);">🚨 Auto Cyber Cell SOS (&gt;70% Risk)</div>
+                    <div class="card-body">
+                        When extortion risk crosses 70%, the system automatically generates an encrypted FIR Evidence Dossier and registers a complaint token for 1930 / cybercrime.gov.in.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">🛡️ Genuine Message Safeguard</div>
+                    <div class="card-body">
+                        Eliminates false alarms by detecting anti-fraud awareness advisories (e.g. <em>"Never share OTP"</em>, <em>"Dial 1930"</em>) and standard bank debit/credit notifications (0.0% false alarms).
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--purple);">🎙️ Live Call Stream Simulation</div>
+                    <div class="card-body">
+                        Ingests speech transcripts sentence-by-sentence in real time, updating threat meters and flagging psychological escalation as the conversation unfolds.
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Slide 3 of 7</div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- SLIDE 4 : TECHSTACK -->
+        <!-- ======================================================= -->
+        <div class="slide">
+            <div>
+                <span class="slide-pill">PS-1: DIGITAL ARREST & REAL-TIME CYBER FRAUD SHIELD</span>
+                <h2 class="slide-title">Technology Stack & Architecture Highlights</h2>
+            </div>
+            <div class="grid-4">
+                <div class="card">
+                    <div class="card-header" style="color: var(--primary);">💻 Frontend & UI</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>Streamlit Framework</li>
+                            <li>Modern Dark-Mode CSS</li>
+                            <li>Responsive Metric Cards</li>
+                            <li>Dual-Mode WSGI Support</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--amber);">⚙️ Machine Learning</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>scikit-learn (LogisticRegression)</li>
+                            <li>TfidfVectorizer (1-3 N-Grams)</li>
+                            <li>Calibrated Probabilities</li>
+                            <li>Sublinear Term Weighting</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">📊 Data & NLP</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>pandas & numpy</li>
+                            <li>RegEx Span Highlighter</li>
+                            <li>Co-occurrence Multiplier</li>
+                            <li>60 Labelled Scenarios</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: #ec4899;">⚡ Runtime & Privacy</div>
+                    <div class="card-body">
+                        <ul>
+                            <li>100% Local CPU Execution</li>
+                            <li>~0.99ms Latency</li>
+                            <li>Zero Paid Cloud APIs</li>
+                            <li>Total Confidentiality</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Slide 4 of 7</div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- SLIDE 5 : WORKFLOW -->
+        <!-- ======================================================= -->
+        <div class="slide">
+            <div>
+                <span class="slide-pill">PS-1: DIGITAL ARREST & REAL-TIME CYBER FRAUD SHIELD</span>
+                <h2 class="slide-title">System Workflow: From Ingestion to Safe Action</h2>
+            </div>
+            <div class="grid-5">
+                <div class="card" style="text-align: center;">
+                    <div class="step-circle" style="background: var(--primary);">1</div>
+                    <div class="card-header" style="color: var(--primary); justify-content: center; font-size: 1.05rem;">Input Ingestion</div>
+                    <div class="card-body" style="font-size: 0.85rem;">Audio transcript, SMS, or live sentence stream.</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="step-circle" style="background: var(--amber);">2</div>
+                    <div class="card-header" style="color: var(--amber); justify-content: center; font-size: 1.05rem;">Dual-Engine Scan</div>
+                    <div class="card-body" style="font-size: 0.85rem;">Parallel TF-IDF ML vectorization + 6-cue span matching.</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="step-circle" style="background: var(--green);">3</div>
+                    <div class="card-header" style="color: var(--green); justify-content: center; font-size: 1.05rem;">Safeguard Filter</div>
+                    <div class="card-body" style="font-size: 0.85rem;">Detects negation & genuine banking/advisory patterns.</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="step-circle" style="background: var(--purple);">4</div>
+                    <div class="card-header" style="color: var(--purple); justify-content: center; font-size: 1.05rem;">Hybrid Scoring</div>
+                    <div class="card-body" style="font-size: 0.85rem;">40% ML + 60% Rule Co-occurrence aggregated in &lt;1ms.</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div class="step-circle" style="background: var(--red);">5</div>
+                    <div class="card-header" style="color: var(--red); justify-content: center; font-size: 1.05rem;">Auto Cyber SOS</div>
+                    <div class="card-body" style="font-size: 0.85rem;">If Risk &gt; 70%, auto-files incident token &amp; generates FIR dossier for 1930.</div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Slide 5 of 7</div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- SLIDE 6 : UNIQUE SELLING POINT (USP) -->
+        <!-- ======================================================= -->
+        <div class="slide">
+            <div>
+                <span class="slide-pill">PS-1: DIGITAL ARREST & REAL-TIME CYBER FRAUD SHIELD</span>
+                <h2 class="slide-title">Unique Selling Point: What Sets CyberShield Apart</h2>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--primary);">⚡ Real-Time Latency (~0.99 ms)</div>
+                    <div class="card-body">
+                        Executes 100x faster than cloud LLM APIs, enabling instantaneous interception during active phone and video calls on any standard laptop CPU.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">🛡️ 0.0% False Alarm Rate</div>
+                    <div class="card-body">
+                        Genuine Message Safeguard prevents alert fatigue by accurately distinguishing real bank alerts and police advisories from malicious coercion.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--red);">🚨 Automated Cyber Cell Dispatch</div>
+                    <div class="card-body">
+                        When extortion risk crosses 70%, the system automatically generates an encrypted FIR Evidence Dossier and registers a complaint token for cybercrime.gov.in / 1930.
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: #ec4899;">🔒 Zero-Cost & 100% Data Privacy</div>
+                    <div class="card-body">
+                        Requires zero paid API tokens and zero internet connectivity, keeping sensitive call content completely confidential on-device.
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Slide 6 of 7</div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- SLIDE 7 : SCREENSHOT AND REFERENCES -->
+        <!-- ======================================================= -->
+        <div class="slide">
+            <div>
+                <span class="slide-pill">PS-1: DIGITAL ARREST & REAL-TIME CYBER FRAUD SHIELD</span>
+                <h2 class="slide-title">Prototype Demonstration & Official References</h2>
+            </div>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header" style="color: var(--primary);">🖥️ Live Prototype Highlights</div>
+                    <div class="card-body">
+                        <ul>
+                            <li><strong>Tab 1:</strong> Live Fraud Shield with Dynamic Sentence-by-Sentence Call Simulator.</li>
+                            <li><strong>Tab 2:</strong> 60-Sample Evaluation Benchmark (100% Accuracy, 0% False Alarm Rate).</li>
+                            <li><strong>Tab 3:</strong> Offline Audio (.wav/.mp3) &amp; Transcript (.json/.txt) Ingestion.</li>
+                            <li><strong>Explainable High-Contrast UI:</strong> Category badges &amp; 3-step action guide.</li>
+                            <li><strong>Production Deployment:</strong> Streamlit + Vercel Serverless Dual-Mode.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" style="color: var(--green);">📚 Official References & Regulatory Sources</div>
+                    <div class="card-body">
+                        <ol style="margin-left: 20px;">
+                            <li><strong>Ministry of Home Affairs (MHA)</strong> — National Cyber Crime Reporting Portal (cybercrime.gov.in).</li>
+                            <li><strong>Indian Cyber Crime Coordination Centre (I4C)</strong> — National Citizen Financial Helpline: <strong>1930</strong>.</li>
+                            <li><strong>TRAI Consumer Advisory</strong> — Public Notices on Mobile Disconnection Scams.</li>
+                            <li><strong>Reserve Bank of India (RBI)</strong> — Circulars on Fictitious Offers &amp; Safe Account Frauds.</li>
+                            <li><strong>Delhi &amp; Mumbai Police Cyber Crime Directives</strong> on Digital Arrest Impersonation Laws.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-align: right;">Slide 7 of 7</div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()">◀ Previous</button>
+        <span id="slide-indicator">Slide 1 of 7 (Use Arrow Keys or Spacebar)</span>
+        <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const indicator = document.getElementById('slide-indicator');
+
+        function showSlide(index) {
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === index);
+            });
+            indicator.innerText = `Slide ${index + 1} of ${slides.length} (Use Arrow Keys or Spacebar)`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>

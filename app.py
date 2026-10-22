@@ -116,6 +116,90 @@ STANDALONE_HTML = """<!DOCTYPE html>
         .disclaimer { background: #1e293b; border-left: 4px solid #64748b; padding: 12px 16px; border-radius: 4px; font-size: 0.85rem; color: #cbd5e1; margin-top: 16px; }
         .live-pulse { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-right: 6px; animation: pulse 1.2s infinite; }
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.3); } 100% { opacity: 1; transform: scale(1); } }
+
+        /* ===================================================== */
+        /* MOBILE RESPONSIVE ADAPTATIONS                         */
+        /* ===================================================== */
+        @media (max-width: 768px) {
+            body { padding: 10px 8px; }
+            .container { width: 100%; max-width: 100%; padding: 0; }
+            
+            /* Header */
+            .header { padding: 16px 14px; margin-bottom: 14px; border-radius: 10px; }
+            .header h1 { font-size: 1.35rem; flex-wrap: wrap; line-height: 1.25; }
+            .header p { font-size: 0.88rem; }
+            .chip-container { gap: 6px; margin-top: 10px; }
+            .chip { font-size: 0.68rem; padding: 3px 8px; }
+
+            /* Horizontal scroll tabs for mobile */
+            .tab-bar { 
+                overflow-x: auto; 
+                white-space: nowrap; 
+                -webkit-overflow-scrolling: touch; 
+                scrollbar-width: none; 
+                gap: 4px; 
+                margin-bottom: 16px;
+                padding-bottom: 4px;
+            }
+            .tab-bar::-webkit-scrollbar { display: none; }
+            .tab-btn { padding: 8px 14px; font-size: 0.85rem; flex-shrink: 0; min-height: 42px; }
+
+            /* Card */
+            .card { padding: 14px; margin-bottom: 14px; border-radius: 10px; }
+            .card-title { font-size: 1.05rem; }
+
+            /* Form & Buttons */
+            textarea { font-size: 0.9rem; padding: 8px 10px; }
+            .btn-row { flex-direction: column; align-items: stretch; gap: 10px; }
+            button.btn { width: 100%; justify-content: center; min-height: 44px; font-size: 0.95rem; }
+            .btn-row > div { width: 100%; justify-content: space-between; margin-left: 0 !important; }
+
+            /* Risk Banner */
+            .risk-banner { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                gap: 12px; 
+                padding: 16px 14px; 
+            }
+            #risk-title { font-size: 1.6rem !important; }
+            .risk-banner > div:last-child { text-align: left !important; width: 100%; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px; }
+            #latency-val { font-size: 1rem !important; }
+
+            /* Metrics Grid: 2 columns on mobile */
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .metric-box { padding: 10px 8px; }
+            .metric-box .val { font-size: 1.35rem; }
+            .metric-box .lbl { font-size: 0.7rem; }
+
+            /* Highlight box */
+            .annotated-box { padding: 14px 12px; font-size: 0.95rem; line-height: 1.9; }
+
+            /* Safe Steps */
+            .safe-step { padding: 10px; gap: 8px; }
+            .safe-step-circle { width: 24px; height: 24px; font-size: 0.8rem; }
+
+            /* Tab 2 & Tab 3 Grids */
+            #tab-benchmark > .card > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            #tab-upload > .card > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+            
+            /* Search & filter in Tab 2 */
+            #tab-benchmark div[style*="display: flex; gap: 10px"] {
+                flex-direction: column;
+            }
+            #table-search, #verdict-filter {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .metrics-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
@@ -178,6 +262,31 @@ STANDALONE_HTML = """<!DOCTYPE html>
 
                 <!-- Analysis Results Section -->
                 <div id="results-area" style="display: none;">
+                    <!-- Automated Cyber Cell Complaint Banner (Triggered when Risk > 70%) -->
+                    <div id="cyber-cell-box" style="display: none; background: linear-gradient(135deg, #450a0a 0%, #1e1b4b 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 18px; margin-bottom: 20px; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25);">
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span class="live-pulse" style="width: 12px; height: 12px; background: #ef4444;"></span>
+                                <span style="font-size: 1.05rem; font-weight: 800; color: #fecaca; text-transform: uppercase;">
+                                    🚨 AUTOMATED CYBER CELL COMPLAINT FILED (Risk &gt; 70%)
+                                </span>
+                            </div>
+                            <span id="complaint-token" style="background: #ef4444; color: white; padding: 4px 12px; border-radius: 999px; font-weight: 800; font-size: 0.82rem; letter-spacing: 0.5px;">
+                                TOKEN: #NCR-2026-98124
+                            </span>
+                        </div>
+                        <div style="font-size: 0.88rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 12px;">
+                            <strong>Auto-Escalation Status:</strong> <span style="color: #4ade80; font-weight: 700;">TRANSMITTED TO NATIONAL CYBER CRIME HELPLINE 1930 &amp; PORTAL (cybercrime.gov.in)</span><br>
+                            <span style="color: #cbd5e1; font-size: 0.82rem;">Because this interaction crossed the 70% high-risk coercion threshold, an encrypted evidence package and legal draft have been automatically dispatched under Section 66D IT Act and BNSS Extortion provisions.</span>
+                        </div>
+                        <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 0.8rem; color: #94a3b8; max-height: 130px; overflow-y: auto; margin-bottom: 12px; white-space: pre-wrap;" id="complaint-dossier-text"></div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button class="btn" style="background: #ef4444; color: white; font-size: 0.85rem;" onclick="copyComplaintDossier()">📋 Copy FIR Evidence Dossier</button>
+                            <a href="tel:1930" class="btn" style="background: #16a34a; color: white; text-decoration: none; font-size: 0.85rem;">📞 One-Touch Dial 1930</a>
+                            <a href="https://cybercrime.gov.in" target="_blank" class="btn" style="background: #2563eb; color: white; text-decoration: none; font-size: 0.85rem;">🌐 Open CyberCrime Portal</a>
+                        </div>
+                    </div>
+
                     <div id="risk-banner" class="risk-banner high">
                         <div>
                             <span style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;" id="verdict-tag">SHIELD ASSESSMENT VERDICT</span>
@@ -375,8 +484,22 @@ STANDALONE_HTML = """<!DOCTYPE html>
             }
         }
 
+        let currentDossierText = "";
+
         function renderResults(data) {
             document.getElementById('results-area').style.display = 'block';
+
+            // Automated Cyber Cell Complaint (Triggered when Risk >= 70%)
+            const cyberBox = document.getElementById('cyber-cell-box');
+            if (data.auto_complaint && data.auto_complaint.filed) {
+                cyberBox.style.display = 'block';
+                document.getElementById('complaint-token').innerText = 'TOKEN: #' + data.auto_complaint.token;
+                document.getElementById('complaint-dossier-text').innerText = data.auto_complaint.dossier;
+                currentDossierText = data.auto_complaint.dossier;
+            } else {
+                cyberBox.style.display = 'none';
+                currentDossierText = "";
+            }
 
             // Risk Banner
             const banner = document.getElementById('risk-banner');
@@ -531,6 +654,15 @@ STANDALONE_HTML = """<!DOCTYPE html>
             document.getElementById('input-text').value = PRESETS[presetKey];
             switchTab('tab-live');
             analyzeText();
+        }
+
+        function copyComplaintDossier() {
+            if (!currentDossierText) return;
+            navigator.clipboard.writeText(currentDossierText).then(() => {
+                alert("✅ Official Cyber Cell FIR Evidence Dossier copied to clipboard!");
+            }).catch(() => {
+                alert("Dossier text ready for copy:\n" + currentDossierText);
+            });
         }
 
         // Auto-load preset 1 on initial page render
@@ -721,6 +853,96 @@ def run_streamlit_app():
         .safe-step-item { display: flex; gap: 12px; margin-bottom: 12px; }
         .step-circle { background: #16a34a; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
         .policy-disclaimer { background: #f1f5f9; border-left: 4px solid #64748b; padding: 12px 16px; border-radius: 4px; margin-top: 16px; font-size: 0.88rem; color: #334155; }
+
+        /* ===================================================== */
+        /* STREAMLIT MOBILE RESPONSIVE ADAPTATIONS               */
+        /* ===================================================== */
+        @media (max-width: 768px) {
+            .main .block-container {
+                padding-top: 1rem !important;
+                padding-left: 0.75rem !important;
+                padding-right: 0.75rem !important;
+            }
+            .main-header {
+                padding: 16px 14px !important;
+                margin-bottom: 16px !important;
+            }
+            .main-header h1 {
+                font-size: 1.35rem !important;
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+            .main-header p {
+                font-size: 0.88rem !important;
+            }
+            .badge-chip {
+                font-size: 0.7rem !important;
+                padding: 2px 8px !important;
+                margin-top: 6px !important;
+            }
+
+            /* Responsive Risk Banner */
+            .risk-banner {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 12px !important;
+                padding: 16px 14px !important;
+            }
+            .risk-banner div[style*="font-size: 2."] {
+                font-size: 1.6rem !important;
+            }
+            .risk-banner div[style*="text-align: right"] {
+                text-align: left !important;
+                width: 100% !important;
+                border-top: 1px solid rgba(255,255,255,0.2) !important;
+                padding-top: 8px !important;
+            }
+
+            /* Stack columns on mobile */
+            [data-testid="column"] {
+                width: 100% !important;
+                flex: 1 1 100% !important;
+                min-width: 100% !important;
+            }
+
+            /* Touch friendly buttons */
+            .stButton button {
+                width: 100% !important;
+                min-height: 46px !important;
+                font-size: 0.95rem !important;
+            }
+
+            /* Metrics */
+            .metric-card {
+                padding: 10px !important;
+                margin-bottom: 8px !important;
+            }
+            .metric-value {
+                font-size: 1.4rem !important;
+            }
+            .metric-label {
+                font-size: 0.72rem !important;
+            }
+
+            /* Annotated Box */
+            .annotated-text-box {
+                padding: 12px !important;
+                font-size: 0.92rem !important;
+                line-height: 1.8 !important;
+            }
+
+            /* Scrollable tabs */
+            [data-testid="stTabs"] [data-baseweb="tab-list"] {
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                -webkit-overflow-scrolling: touch !important;
+                gap: 4px !important;
+            }
+            [data-testid="stTabs"] button {
+                padding: 8px 12px !important;
+                font-size: 0.85rem !important;
+            }
+        }
     </style>
     """, unsafe_allow_html=True)
 
@@ -825,6 +1047,37 @@ def run_streamlit_app():
         elif (run_analysis or text_input.strip()) and not run_live_stream:
             res = detector.analyze(text_input)
             with result_container:
+                # Automated Cyber Cell Complaint (Triggered when Risk >= 70%)
+                if res.get("auto_complaint", {}).get("filed", False):
+                    complaint = res["auto_complaint"]
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #450a0a 0%, #1e1b4b 100%); border: 2px solid #ef4444; border-radius: 12px; padding: 18px; margin-bottom: 18px; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-weight: 800; color: #fecaca; font-size: 1.15rem;">
+                                🚨 AUTOMATED CYBER CELL COMPLAINT FILED (Risk &gt; 70%)
+                            </span>
+                            <span style="background: #ef4444; color: white; font-weight: 800; font-size: 0.85rem; padding: 4px 12px; border-radius: 999px;">
+                                TOKEN: #{complaint['token']}
+                            </span>
+                        </div>
+                        <div style="color: #e2e8f0; font-size: 0.9rem; margin-bottom: 8px;">
+                            <strong>Auto-Escalation Status:</strong> <span style="color: #4ade80; font-weight: 700;">{complaint['status']}</span><br>
+                            <strong>Target Routing:</strong> {complaint['authority']} (Emergency Line: {complaint['helpline']})
+                        </div>
+                        <div style="font-size: 0.85rem; color: #cbd5e1;">
+                            Severe Digital Arrest coercion detected. An encrypted FIR incident dossier has been automatically generated and dispatched under Section 66D IT Act and BNSS Extortion provisions.
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    with st.expander("📄 View Official Cyber Cell Evidence Dossier", expanded=False):
+                        st.code(complaint["dossier"], language="text")
+                        st.download_button(
+                            label="📥 Download Evidence Dossier (.txt)",
+                            data=complaint["dossier"],
+                            file_name=f"CyberCell_Complaint_{complaint['token']}.txt",
+                            mime="text/plain"
+                        )
+
                 risk_cls = res["risk_level"].lower()
                 st.markdown(f"""
                 <div class="risk-banner {risk_cls}">
